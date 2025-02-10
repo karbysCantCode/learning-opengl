@@ -1,0 +1,60 @@
+cmake_minimum_required(VERSION "3.20.0")
+
+if(MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLLDebug")
+    endif()
+endif()
+
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/src/vendor/glm/")
+
+project(main1)
+set(CMAKE_CXX_STANDARD 20)
+
+file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+
+# EXCLUDE CERTAIN FILES BY FILENAME
+list(FILTER MY_SOURCES EXCLUDE REGEX ".*main.cpp")
+
+#message("Sources found: ${MY_SOURCES}")
+add_executable(main1 ${MY_SOURCES})
+
+target_link_options(main1 PRIVATE "/NODEFAULTLIB:LIBCMT")
+target_link_options(main1 PRIVATE "/NODEFAULTLIB:MSVCRT")
+
+target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/res/") #to have a variable that is the path to resources in development
+#target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC RESOURCES_PATH="./res/") # variable of path to resources in release
+
+target_include_directories(main1 PUBLIC 
+			"${CMAKE_CURRENT_SOURCE_DIR}/src/"
+			"${CMAKE_CURRENT_SOURCE_DIR}/src/vendor/"
+			"${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/GLEW/include/"
+			"${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/GLFW/include/") #tell compiler where the header are @
+
+
+target_link_directories(main1 PRIVATE 
+    "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/GLFW/lib-vc2022/"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/GLEW/lib/Release/Win32/"
+)
+
+
+
+add_definitions(-DGLEW_STATIC)
+
+target_link_libraries(main1 PRIVATE 
+    glfw3
+    glew32s
+    opengl32
+)
+
+# Define the folders to copy
+set(SOURCE_RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/res/")
+set(TARGET_RESOURCES_DIR "${CMAKE_BINARY_DIR}/res/")
+
+# Copy the resources directory after building the executable
+add_custom_command(TARGET main1 POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${SOURCE_RESOURCES_DIR}   # Source directory
+        ${TARGET_RESOURCES_DIR}   # Destination directory
+)
