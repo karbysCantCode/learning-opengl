@@ -21,15 +21,17 @@ void TestMenu::UpdateScene()
 {
 	if (m_TestScenesEnabled)
 	{
+		if (m_SceneInstance != nullptr) delete m_SceneInstance;
 		switch (m_CurrentTestScene)
 		{
 		case 0: // clear color scene
-			if (m_SceneInstance != nullptr) delete m_SceneInstance;
 			m_SceneInstance = new test::TestClearColor();
 			break;
 		case 1:
-			if (m_SceneInstance != nullptr) delete m_SceneInstance;
 			m_SceneInstance = new test::TestTexture(m_Renderer, m_screenWidth, m_screenHeight);
+			break;
+		case 2:
+			m_SceneInstance = new test::TestMultiColoredTriangle(m_Renderer, m_screenWidth, m_screenHeight);
 			break;
 		default:
 			break;
@@ -51,7 +53,7 @@ void TestMenu::OnRender()
 		{
 			const int SceneAtFirst = m_CurrentTestScene;
 			
-			ImGui::SliderInt("Scene", &m_CurrentTestScene, 0, 1, m_SceneNames[m_CurrentTestScene]);
+			ImGui::SliderInt("Scene", &m_CurrentTestScene, 0, 2, m_SceneNames[m_CurrentTestScene]);
 			
 			if (m_TestScenesEnabled && m_SceneInstance == nullptr)
 			{

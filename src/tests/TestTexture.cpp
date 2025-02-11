@@ -2,8 +2,8 @@
 #include <iostream>
 
 test::TestTexture::TestTexture(Renderer &renderer, float screenWidth, float screenHeight)
-	: m_Vb(new VertexBuffer(m_Positions, sizeof(float) * 4 * 4))
-	, m_Ib(new IndexBuffer(m_Indicies, 6))
+	: m_Vb(new VertexBuffer(m_Positions, sizeof(float) * 4 * 4, GL_STATIC_DRAW))
+	, m_Ib(new IndexBuffer(m_Indicies, 6, GL_STATIC_DRAW))
 	, m_Shader(new Shader(m_ShaderPath))
     , m_Texture(new Texture(m_TexturePath))
     , m_Renderer(renderer)
@@ -22,9 +22,9 @@ test::TestTexture::TestTexture(Renderer &renderer, float screenWidth, float scre
 
 test::TestTexture::~TestTexture()
 {
-	delete m_Vb;
-	delete m_Ib;
-	delete m_Shader;
+    delete m_Vb;
+    delete m_Ib;
+    delete m_Shader;
     delete m_Texture;
 }
 
@@ -82,17 +82,14 @@ bool InputText(const char* label, std::string* str, ImGuiInputTextFlags flags = 
 
 void test::TestTexture::OnImGuiRender()
 {
-	if (ImGui::CollapsingHeader("Texture"))
-	{
-        InputText("Shader File Path", &m_ShaderPath);
-        /*ImGui::SameLine();
-        if (ImGui::Button("Update to this path"))
-        {
+    InputText("Shader File Path", &m_ShaderPath);
+    /*ImGui::SameLine();
+    if (ImGui::Button("Update to this path"))
+    {
 
-        }*/
+    }*/
 
-        InputText("Texture File Path", &m_TexturePath);
+    InputText("Texture File Path", &m_TexturePath);
 
-        ImGui::SliderFloat3("Model Position", &m_ModelPosition.x, 0.0f, m_screenWidth);
-	}
+    ImGui::SliderFloat3("Model Position", &m_ModelPosition.x, 0.0f, m_screenWidth);
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "TestClearColor.h"
-#include "tests/TestTexture.h"
+#include "TestTexture.h"
+#include "MultiColoredTriangles.h"
 
 class TestMenu
 {
@@ -14,7 +15,7 @@ private:
 		CLEAR_COLOR,
 		MAX_SCENE
 	};
-	const char* m_SceneNames[2] = { "Clear color", "Texture" };
+	const char* m_SceneNames[3] = { "Clear color", "Texture", "Multi Colored Triangles!"};
 	Renderer& m_Renderer;
 	float m_screenWidth;
 	float m_screenHeight;
