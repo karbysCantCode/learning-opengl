@@ -80,14 +80,14 @@ void test::TestMultiColoredTriangle::m_UpdateBuffersToChangedData()
 
 		std::copy(std::begin(indexData), std::end(indexData), m_IndexData.begin() + (Index * 3));
 
-		m_Ib->UpdateSection(sizeof(unsigned int) * Index * 3, indexData, sizeof(unsigned int) * 3, GL_DYNAMIC_DRAW);
+		m_Ib->UpdateSection(sizeof(unsigned int) * Index * 3, indexData, 3, GL_DYNAMIC_DRAW);
 	}
 }
 
 test::TestMultiColoredTriangle::TestMultiColoredTriangle(Renderer& renderer, float screenWidth, float screenHeight)
 	: m_Renderer(renderer)
-	, m_Vb(new VertexBuffer(0, 0, GL_DYNAMIC_DRAW))
-	, m_Ib(new IndexBuffer(0, 0, GL_DYNAMIC_DRAW))
+	, m_Vb(new VertexBuffer(nullptr, 7*3*sizeof(float), GL_DYNAMIC_DRAW))
+	, m_Ib(new IndexBuffer(nullptr, 0, GL_DYNAMIC_DRAW))
 	, m_Shader(new Shader(m_ShaderPath))
 	, m_screenWidth(screenWidth)
 	, m_Proj(glm::ortho(0.0f, screenWidth, 0.0f, screenHeight, -1.0f, 1.0f))
@@ -115,7 +115,7 @@ void test::TestMultiColoredTriangle::OnRender()
 void test::TestMultiColoredTriangle::AddTriangle(const float pos[3], const float color[4])
 {
 	Triangles.emplace_back(pos, color, true);
-	m_UpdateBuffersToChangedData();
+	m_ClearAndUpdateBuffersToNewData();
 }
 
 void test::TestMultiColoredTriangle::OnImGuiRender()
@@ -123,7 +123,7 @@ void test::TestMultiColoredTriangle::OnImGuiRender()
 	ImGui::Text("Counter: %d", m_TriangleCount); // Display the counter
 	if (ImGui::Button("New Triangle")) {
 		m_TriangleCount++; // Increment
-
+							
 		const float pos[3] = { 0.0f, 0.0f, 0.0f };
 		const float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
@@ -157,7 +157,10 @@ void test::TestMultiColoredTriangle::OnImGuiRender()
 			}
 			if (ImGui::Button("Breakpoint button"))
 			{
-				std::cout << "BP\n";
+				/*std::cout << m_IndexData.data() << "\n";
+				std::cout << m_VertexData.data() << "\n";
+				std::cout << "BP\n";*/
+				m_Renderer.m_BP = true;
 			}
 		}
 	}

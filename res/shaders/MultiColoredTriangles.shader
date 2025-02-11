@@ -10,7 +10,7 @@ uniform mat4 u_MVP;
 
 void main()
 {
-	gl_Position = vec4(position,1.0) * u_MVP;
+	gl_Position =  u_MVP * position;
 	fragColor = color;
 };
 

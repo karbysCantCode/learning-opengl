@@ -22,7 +22,7 @@ namespace test {
 		Renderer& m_Renderer;
 
 		VertexArray m_Va;
-		VertexBuffer* m_Vb =  nullptr;
+		VertexBuffer* m_Vb = nullptr;
 		VertexBufferLayout m_Layout;
 		IndexBuffer* m_Ib = nullptr;
 

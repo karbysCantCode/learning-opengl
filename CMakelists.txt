@@ -36,7 +36,7 @@ target_include_directories(main1 PUBLIC
 
 target_link_directories(main1 PRIVATE 
     "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/GLFW/lib-vc2022/"
-	"${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/GLEW/lib/Release/Win32/"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/GLEW/lib/Release/x64/"
 )
 
 

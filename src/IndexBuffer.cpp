@@ -53,15 +53,15 @@ void IndexBuffer::RewriteBuffer(const unsigned int* data, unsigned int count, GL
     m_BufferSize = count * sizeof(unsigned int);
 }
 
-void IndexBuffer::UpdateSection(unsigned int offset, const void* data, unsigned int count, GLenum GLmode)
+void IndexBuffer::UpdateSection(unsigned int offset, const void* data, unsigned int count, GLenum GLmode) // DONT USE THIS POS (pience of fshit)
 {
     std::cout << "IB UPDATING " << offset << " " << count << std::endl;
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
-    if (count * sizeof(unsigned int) >= m_BufferSize)
+    /*if (count * sizeof(unsigned int) >= m_BufferSize)
     {
-        GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), nullptr, GLmode));
         m_BufferSize += count * sizeof(unsigned int);
-    }
+        GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_BufferSize, nullptr, GLmode));
+    }*/
     GLCall(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, count * sizeof(unsigned int), data));
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }

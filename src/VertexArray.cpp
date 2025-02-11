@@ -3,6 +3,9 @@
 #include "VertexBufferLayout.h"
 #include "Renderer.h"
 
+//debug
+#include <iostream>
+
 VertexArray::VertexArray()
 
 {
@@ -18,6 +21,9 @@ void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& la
 {
 	Bind();
 	vb.Bind();
+	int size = 0;
+	glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
+	std::cout << "Index Buffer Size: " << size << " bytes" << std::endl;
 	const auto &elements = layout.GetElements();
 	unsigned int offset = 0;
 
