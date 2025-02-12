@@ -2,9 +2,6 @@
 
 #include "Renderer.h"
 
-// DEBOUG
-#include <iostream>
-
 VertexBuffer::VertexBuffer(const void* data, unsigned int size, GLenum GLmode)// size is size of data in bytes
 {
     GLCall(glGenBuffers(1, &m_RendererID));
@@ -28,7 +25,6 @@ VertexBuffer::~VertexBuffer()
 void VertexBuffer::Bind() const
 {
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
-    std::cout << "BOUND VB: " << m_RendererID << std::endl;
 }
 
 void VertexBuffer::Unbind() const
@@ -50,7 +46,6 @@ void VertexBuffer::UpdateSection(unsigned int offset, const void* data, unsigned
 
 void VertexBuffer::RewriteBuffer(const void* data, unsigned int size, GLenum GLmode) // size is size of data in bytes
 {
-    std::cout << "REWRITE VBO ID:" << m_RendererID << std::endl;
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
     GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GLmode));
     m_BufferSize = size;

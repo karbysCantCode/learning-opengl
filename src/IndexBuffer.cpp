@@ -2,8 +2,6 @@
 
 #include "Renderer.h"
 
-// TEMPD EBUG
-#include <iostream>
 
 IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count, GLenum GLmode)
     : m_Count(count)
@@ -55,7 +53,6 @@ void IndexBuffer::RewriteBuffer(const unsigned int* data, unsigned int count, GL
 
 void IndexBuffer::UpdateSection(unsigned int offset, const void* data, unsigned int count, GLenum GLmode) // DONT USE THIS POS (pience of fshit)
 {
-    std::cout << "IB UPDATING " << offset << " " << count << std::endl;
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
     /*if (count * sizeof(unsigned int) >= m_BufferSize)
     {

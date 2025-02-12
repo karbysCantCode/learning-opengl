@@ -93,7 +93,7 @@ test::TestMultiColoredTriangle::TestMultiColoredTriangle(Renderer& renderer, flo
 	, m_Ib(new IndexBuffer(nullptr, 0, GL_DYNAMIC_DRAW))
 	, m_Shader(new Shader(m_ShaderPath))
 	, m_screenWidth(screenWidth)
-	, m_Proj(glm::ortho(0.0f, screenWidth, 0.0f, screenHeight, -1.0f, 1.0f))
+	, m_Proj(glm::perspective(glm::radians(90.0f), screenWidth/screenHeight, 0.1f, 1000.0f))
 {
 	m_Layout.Push<float>(3);
 	m_Layout.Push<float>(4);
@@ -111,7 +111,13 @@ test::TestMultiColoredTriangle::~TestMultiColoredTriangle()
 
 void test::TestMultiColoredTriangle::OnRender()
 {
-	m_Shader->SetUniformMat4f("u_MVP", m_Proj);
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+
+	glm::mat4 view = glm::mat4(1.0f);
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -1000.0f));
+
+	m_Shader->SetUniformMat4f("u_MVP", m_Proj * model * view);
 	m_Renderer.Draw(m_Va, *m_Ib, *m_Shader);
 }
 
@@ -150,7 +156,7 @@ void test::TestMultiColoredTriangle::OnImGuiRender()
 				ClearFlag = true;
 				continue;
 			}
-			if (ImGui::SliderFloat3(("Position ##" + std::to_string(Index)).c_str(), CurrentTriangle.Position, 0, 960))
+			if (ImGui::SliderFloat3(("Position ##" + std::to_string(Index)).c_str(), CurrentTriangle.Position, -960, 960))
 			{
 				CurrentTriangle.Updated = true;
 				UpdateFlag = true;
