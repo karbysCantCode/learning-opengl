@@ -21,8 +21,8 @@ void test::TestMultiColoredTriangle::m_ClearAndUpdateBuffersToNewData()
 			CurrentTriangle->Position[0] + 50.0f,CurrentTriangle->Position[1],CurrentTriangle->Position[2],CurrentTriangle->Color[0],
 			CurrentTriangle->Color[1],CurrentTriangle->Color[2],CurrentTriangle->Color[3],
 
-			CurrentTriangle->Position[0],CurrentTriangle->Position[1],CurrentTriangle->Position[2] + 50.0f,CurrentTriangle->Color[0],
-			CurrentTriangle->Color[1],CurrentTriangle->Color[2],CurrentTriangle->Color[3],
+			CurrentTriangle->Position[0],CurrentTriangle->Position[1] + 50.0f,CurrentTriangle->Position[2],CurrentTriangle->Color[0],
+			CurrentTriangle->Color[1],CurrentTriangle->Color[2],CurrentTriangle->Color[3]
 		};
 
 		std::copy(std::begin(vertexData), std::end(vertexData), m_VertexData.begin() + (Index * 7 * 3));
@@ -52,16 +52,19 @@ void test::TestMultiColoredTriangle::m_UpdateBuffersToChangedData()
 		if (!CurrentTriangle->Updated) continue;
 		CurrentTriangle->Updated = false;
 		//UPDATE VB
+		// THIS SECTION IS TO COMPACT THE "TRIANGLE" struct into a continous list of float values so i can pass it to the gpu
 		const float vertexData[3 * 7] =
 		{
+			// FIRST VERTEX (0,0,0 offset) -- THESE ARE X Y Z BTW
 			CurrentTriangle->Position[0],CurrentTriangle->Position[1],CurrentTriangle->Position[2],CurrentTriangle->Color[0],
 			CurrentTriangle->Color[1],CurrentTriangle->Color[2],CurrentTriangle->Color[3],
-
+			// SECOND VERTEX (50,0,0 offset)
 			CurrentTriangle->Position[0] + 50.0f,CurrentTriangle->Position[1],CurrentTriangle->Position[2],CurrentTriangle->Color[0],
 			CurrentTriangle->Color[1],CurrentTriangle->Color[2],CurrentTriangle->Color[3],
-
-			CurrentTriangle->Position[0],CurrentTriangle->Position[1],CurrentTriangle->Position[2] + 50.0f,CurrentTriangle->Color[0],
-			CurrentTriangle->Color[1],CurrentTriangle->Color[2],CurrentTriangle->Color[3],
+			// THIRD VERTEX (0,50,0 offset)
+			// issue was, third vertex had offset 0,0,50, and im using ortho graphic view, so z doesnt work hence it wasnt showing! and hence it was sideways
+			CurrentTriangle->Position[0],CurrentTriangle->Position[1] + 50.0f,CurrentTriangle->Position[2],CurrentTriangle->Color[0],
+			CurrentTriangle->Color[1],CurrentTriangle->Color[2],CurrentTriangle->Color[3]
 		};
 
 		std::copy(std::begin(vertexData), std::end(vertexData), m_VertexData.begin() + (Index * 7 * 3));
@@ -136,31 +139,27 @@ void test::TestMultiColoredTriangle::OnImGuiRender()
 	for (int Index = 0; Index < Triangles.size(); Index++)
 	{
 		auto& CurrentTriangle = Triangles[Index];
-		if (ImGui::CollapsingHeader("Triangle #" + Index))
+		std::string label = "Triangle #" + std::to_string(Index) + " ##zz";
+		if (ImGui::CollapsingHeader(label.c_str()))
 		{
-			if (ImGui::Button("Delete Triangle"))
+			if (ImGui::Button(("Delete Triangle ##" + std::to_string(Index)).c_str()))
 			{
 				Triangles.erase(Triangles.begin()+Index);
+				m_TriangleCount--;
+				Index--;
 				ClearFlag = true;
 				continue;
 			}
-			if (ImGui::SliderFloat3("Position", CurrentTriangle.Position, 0, 960))
+			if (ImGui::SliderFloat3(("Position ##" + std::to_string(Index)).c_str(), CurrentTriangle.Position, 0, 960))
 			{
 				CurrentTriangle.Updated = true;
 				UpdateFlag = true;
 			}
-			if (ImGui::ColorEdit4("Color", CurrentTriangle.Color, ImGuiColorEditFlags_Float))
+			if (ImGui::ColorEdit4(("Color ##" + std::to_string(Index)).c_str(), CurrentTriangle.Color, ImGuiColorEditFlags_Float))
 			{
 				std::cout << CurrentTriangle.Color[0] << " " << CurrentTriangle.Color[1] << " " << CurrentTriangle.Color[2] << " " << CurrentTriangle.Color[3] << std::endl;
 				CurrentTriangle.Updated = true;
 				UpdateFlag = true;
-			}
-			if (ImGui::Button("Breakpoint button"))
-			{
-				/*std::cout << m_IndexData.data() << "\n";
-				std::cout << m_VertexData.data() << "\n";
-				std::cout << "BP\n";*/
-				m_Renderer.m_BP = true;
 			}
 		}
 	}
